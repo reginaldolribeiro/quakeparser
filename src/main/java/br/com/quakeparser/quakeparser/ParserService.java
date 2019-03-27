@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.com.quakeparser.quakeparser.Game;
+import br.com.quakeparser.quakeparser.Player;
+
 public class ParserService {
 
     private Game game;
@@ -31,7 +34,7 @@ public class ParserService {
      */
     public List<Game> getInfoGames() throws IOException {
 
-        List<String> lines = loadFile("games.1.log");
+        List<String> lines = loadFile("games.log");
         System.out.println("*** Quantidade de linhas do games.log: " + lines.size() + " ***");
 
         Matcher matcherForKill = PATTERN_FOR_KILL.matcher("");
@@ -50,9 +53,10 @@ public class ParserService {
             }
 
             // Pegando os jogadores
+            // \d{1,2}:\d{2}\s+ClientUserInfoChanged:\s+\d{1,4}\s+
             if (line.contains("ClientUserinfoChanged")) {
 
-                String playerName = getPlayer(line);
+                String playerName = getPlayerName(line);
 
                 game.getPlayersString().add(playerName);
                 game.getKills().put(playerName, 0);
@@ -86,6 +90,7 @@ public class ParserService {
                     // System.out.println(killedPlayerName + " matou o " + deadPlayer.getPlayer());
 
                     if (killedPlayerName.equals("<world>")) {
+                        game.addWorldsKill();
                         deadPlayer.subtractKill();
                     }
 
@@ -115,11 +120,7 @@ public class ParserService {
                     .get();
             deadPlayer.addDeath();
 
-            // Pegando a causa da morte
-            int inicioCausaDaMorte = matcherFinalPositionDeadPlayer.end();
-            String causaDaMorte = line.substring(inicioCausaDaMorte).trim();
-            // System.out.println(playerKilled.getPlayer() + " matou " + deadPlayer + " com
-            // " + causaDaMorte);
+            String causeOfDeath = getCauseOfDeath(line, matcherFinalPositionDeadPlayer);
 
             return deadPlayer;
 
@@ -127,19 +128,25 @@ public class ParserService {
         return null;
     }
 
-    private String getPlayerKilledName(String line, Matcher matcherInitialPlayerKilled,
-            Matcher matcherFinalPlayerKilled) {
-        int startOfPlayer = matcherInitialPlayerKilled.end();
-        int endOfPlayer = matcherFinalPlayerKilled.start();
-        String playerName = line.substring(startOfPlayer, endOfPlayer).trim();
-        return playerName;
+    // Pegando a causa da morte
+    private String getCauseOfDeath(String line, Matcher matcherFinalPositionDeadPlayer) {
+        int initialPositionCauseOfDeath = matcherFinalPositionDeadPlayer.end();
+        return line.substring(initialPositionCauseOfDeath).trim();
+        // System.out.println(playerKilled.getPlayer() + " matou " + deadPlayer + " com
+        // " + causaDaMorte);
     }
 
-    private String getPlayer(String line) {
-        int start = line.indexOf("\\");
-        int end = line.indexOf("\\t");
-        String nameOfPlayer = line.substring((start + 1), end);
-        return nameOfPlayer;
+    private String getPlayerKilledName(String line, Matcher matcherInitialPlayerKilled,
+            Matcher matcherFinalPlayerKilled) {
+        int initialOfPlayer = matcherInitialPlayerKilled.end();
+        int finalOfPlayer = matcherFinalPlayerKilled.start();
+        return line.substring(initialOfPlayer, finalOfPlayer).trim();
+    }
+
+    private String getPlayerName(String line) {
+        int initialPosition = line.indexOf("\\");
+        int finalPosition = line.indexOf("\\t");
+        return line.substring((initialPosition + 1), finalPosition).trim();
     }
 
     private List<String> loadFile(String path) throws IOException {
