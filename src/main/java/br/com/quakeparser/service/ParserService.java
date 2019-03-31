@@ -1,4 +1,4 @@
-package br.com.quakeparser.quakeparser;
+package br.com.quakeparser.service;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,23 +10,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import br.com.quakeparser.quakeparser.Game;
-import br.com.quakeparser.quakeparser.Player;
+import br.com.quakeparser.model.Game;
+import br.com.quakeparser.model.Player;
 
 public class ParserService {
 
     private Game game;
-    private int counter = 0;
+    private int counterGame = 0;
     private int countKillWorld = 0;
-    private Set<Player> players = new HashSet<>();
-    private List<Game> games = new ArrayList<>();
+    private Set<Player> players;
+    // private List<Game> games = new ArrayList<>();
     private Player player;
 
     private static final Pattern PATTERN_FOR_KILL = Pattern.compile("\\s*\\d{1,2}:\\d{2}\\s*(Kill:)\\w*");
-    private static final Pattern PATTERN_INITIAL_POSITION_PLAYER_KILLED = Pattern
+    private static final Pattern PATTERN_INITIAL_POSITION_KILLER_PLAYER = Pattern
             .compile("Kill:\\s+[0-9]{1,4}\\s+[0-9]\\s+[0-9]{1,}:\\s+");
-    private static final Pattern PATTERN_FINAL_POSITION_PLAYER_KILLED = Pattern.compile("\\s+\\bkilled");
+    private static final Pattern PATTERN_FINAL_POSITION_KILLER_PLAYER = Pattern.compile("\\s+\\bkilled");
     private static final Pattern PATTERN_FINAL_POSITION_DEAD_PLAYER = Pattern.compile("\\bby\\b");
 
     /**
@@ -34,7 +33,9 @@ public class ParserService {
      */
     public List<Game> getInfoGames() throws IOException {
 
-        List<String> lines = loadFile("games.log");
+        List<Game> games = new ArrayList<>();
+
+        List<String> lines = loadFile("games.1.log");
         System.out.println("*** Quantidade de linhas do games.log: " + lines.size() + " ***");
 
         Matcher matcherForKill = PATTERN_FOR_KILL.matcher("");
@@ -44,9 +45,9 @@ public class ParserService {
 
             // Criando o jogo
             if (line.contains("InitGame:")) {
-                counter++;
+                counterGame++;
                 countKillWorld = 0;
-                game = new Game("game_" + counter);
+                game = new Game("game_" + counterGame);
                 games.add(game);
                 players = new HashSet<>();
                 game.setPlayers(players);
@@ -72,24 +73,28 @@ public class ParserService {
 
                 game.addKill();
 
-                Matcher matcherInitialPlayerKilled = PATTERN_INITIAL_POSITION_PLAYER_KILLED.matcher(line);
-                Matcher matcherFinalPlayerKilled = PATTERN_FINAL_POSITION_PLAYER_KILLED.matcher(line);
+                Matcher matcherInitialKillerPlayer = PATTERN_INITIAL_POSITION_KILLER_PLAYER.matcher(line);
+                Matcher matcherFinalKillerPlayer = PATTERN_FINAL_POSITION_KILLER_PLAYER.matcher(line);
 
                 // Pegando o player que matou
-                if (matcherInitialPlayerKilled.find() && matcherFinalPlayerKilled.find()) {
-                    String killedPlayerName = getPlayerKilledName(line, matcherInitialPlayerKilled,
-                            matcherFinalPlayerKilled);
-                    Player playerKilled = null;
+                if (matcherInitialKillerPlayer.find() && matcherFinalKillerPlayer.find()) {
+                    String killerPlayerName = getKillerPlayerName(line, matcherInitialKillerPlayer,
+                            matcherFinalKillerPlayer);
+                    Player killerPlayer = null;
 
-                    if (!killedPlayerName.equals("<world>")) {
-                        playerKilled = players.stream().filter(p -> p.getPlayer().equalsIgnoreCase(killedPlayerName))
+                    if (!killerPlayerName.equals("<world>")) {
+                        killerPlayer = players.stream().filter(p -> p.getPlayer().equalsIgnoreCase(killerPlayerName))
                                 .findAny().get();
-                        playerKilled.addKill();
+                        killerPlayer.addKill();
+                        game.getKills().put(killerPlayer.getPlayer(),
+                                game.getKills().get(killerPlayer.getPlayer()).intValue() + 1);
+                        // killsForPlayers.put( firstPlayer, killsForPlayers.get( firstPlayer
+                        // ).intValue() + 1 );
                     }
-                    Player deadPlayer = getDeadPlayer(line, matcherFinalPlayerKilled);
+                    Player deadPlayer = getDeadPlayer(line, matcherFinalKillerPlayer);
                     // System.out.println(killedPlayerName + " matou o " + deadPlayer.getPlayer());
 
-                    if (killedPlayerName.equals("<world>")) {
+                    if (killerPlayerName.equals("<world>")) {
                         game.addWorldsKill();
                         deadPlayer.subtractKill();
                     }
@@ -108,10 +113,10 @@ public class ParserService {
     }
 
     // Pegando o player que morreu
-    private Player getDeadPlayer(String line, Matcher matcherFinalPlayerKilled) {
+    private Player getDeadPlayer(String line, Matcher matcherFinalKillerPlayer) {
 
         Matcher matcherFinalPositionDeadPlayer = PATTERN_FINAL_POSITION_DEAD_PLAYER.matcher(line);
-        int initialPositionDeadPlayer = matcherFinalPlayerKilled.end();
+        int initialPositionDeadPlayer = matcherFinalKillerPlayer.end();
 
         if (matcherFinalPositionDeadPlayer.find()) {
             String deadPlayerName = line.substring(initialPositionDeadPlayer, matcherFinalPositionDeadPlayer.start())
@@ -136,9 +141,9 @@ public class ParserService {
         // " + causaDaMorte);
     }
 
-    private String getPlayerKilledName(String line, Matcher matcherInitialPlayerKilled,
+    private String getKillerPlayerName(String line, Matcher matcherInitialKillerPlayer,
             Matcher matcherFinalPlayerKilled) {
-        int initialOfPlayer = matcherInitialPlayerKilled.end();
+        int initialOfPlayer = matcherInitialKillerPlayer.end();
         int finalOfPlayer = matcherFinalPlayerKilled.start();
         return line.substring(initialOfPlayer, finalOfPlayer).trim();
     }

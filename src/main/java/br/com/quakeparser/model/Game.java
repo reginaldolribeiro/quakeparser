@@ -1,4 +1,4 @@
-package br.com.quakeparser.quakeparser;
+package br.com.quakeparser.model;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +17,7 @@ public class Game {
     public Game(String name) {
         this.name = name;
         this.totalKills = 0;
+        this.totalKillsWorld = 0;
     }
 
     public String getName() {

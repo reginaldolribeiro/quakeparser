@@ -1,4 +1,4 @@
-package br.com.quakeparser.quakeparser;
+package br.com.quakeparser.model;
 
 public class Player {
 
