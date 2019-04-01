@@ -20,7 +20,7 @@ import io.restassured.response.Response;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class DemoApplicationTests {
 
-    private static final String ENDPOINT_QUAKE_LOG = "/quake";
+    private static final String ENDPOINT_QUAKE_LOG = "/quake-api/games";
     private ParserService service;
     private List<Game> games;
     private Response responseGames;
@@ -44,9 +44,6 @@ public class DemoApplicationTests {
     @Test
     public void checkHeaderResponse() {
         this.responseGames.then().statusCode(200).and().contentType(ContentType.JSON);
-        // OU
-        // Response response = RestAssured.given().get(QUAKE);
-        // assertThat(response.getStatusCode(), Matchers.equalTo(200));
     }
 
     @Test
@@ -59,7 +56,7 @@ public class DemoApplicationTests {
 
     @Test
     public void checkStatusCodeForGameNotFound() {
-        RestAssured.given().get("/quake/game_25").then().statusCode(404);
+        RestAssured.given().get(ENDPOINT_QUAKE_LOG + "/game_25").then().statusCode(404);
     }
 
     @Test

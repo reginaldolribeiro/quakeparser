@@ -5,10 +5,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Game {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.springframework.hateoas.ResourceSupport;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Game extends ResourceSupport {
 
     private String name;
     private int totalKills;
+    // @JsonIgnore
     private Set<Player> players = new HashSet<>();
     private Set<String> playersString = new HashSet<>();
     private Map<String, Integer> kills = new HashMap<String, Integer>();

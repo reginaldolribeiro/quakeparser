@@ -54,6 +54,8 @@ public class ParserService {
                 Matcher matcherInitialKillerPlayer = PATTERN_INITIAL_POSITION_KILLER_PLAYER.matcher(line);
                 Matcher matcherFinalKillerPlayer = PATTERN_FINAL_POSITION_KILLER_PLAYER.matcher(line);
 
+                // score = totalKills - (totalDeathsByWorld+totalSuicides)
+
                 if (matcherInitialKillerPlayer.find() && matcherFinalKillerPlayer.find()) {
 
                     String killerPlayerName = getKillerPlayerName(line, matcherInitialKillerPlayer,
@@ -148,7 +150,7 @@ public class ParserService {
                     .get();
             deadPlayer.addDeath();
 
-            String causeOfDeath = getCauseOfDeath(line, matcherFinalPositionDeadPlayer);
+            // String causeOfDeath = getCauseOfDeath(line, matcherFinalPositionDeadPlayer);
 
             return deadPlayer;
 
@@ -157,12 +159,14 @@ public class ParserService {
     }
 
     // Pegando a causa da morte
-    private String getCauseOfDeath(String line, Matcher matcherFinalPositionDeadPlayer) {
-        int initialPositionCauseOfDeath = matcherFinalPositionDeadPlayer.end();
-        return line.substring(initialPositionCauseOfDeath).trim();
-        // System.out.println(playerKilled.getPlayer() + " matou " + deadPlayer + " com
-        // " + causaDaMorte);
-    }
+    /*
+     * private String getCauseOfDeath(String line, Matcher
+     * matcherFinalPositionDeadPlayer) { int initialPositionCauseOfDeath =
+     * matcherFinalPositionDeadPlayer.end(); return
+     * line.substring(initialPositionCauseOfDeath).trim(); //
+     * System.out.println(playerKilled.getPlayer() + " matou " + deadPlayer + " com
+     * // " + causaDaMorte); }
+     */
 
     private String getKillerPlayerName(String line, Matcher matcherInitialKillerPlayer,
             Matcher matcherFinalPlayerKilled) {
