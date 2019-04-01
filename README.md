@@ -1,6 +1,8 @@
-# Quake Parser
+# Quake Log Parser
   
-  Realizar o parser do log do jogo Quake 3 Arena, pegando informacoes do jogo como: jogadores participantes, total de mortes no jogo e total de morte por jogares.
+  Realiza o parser do log do jogo Quake 3 Arena, pegando informações do jogo como: jogadores participantes, total de mortes no jogo e total de morte por jogares.
+  
+  ### JSON de retorno
   ```
   {
     "name": "game_1",
@@ -27,7 +29,7 @@
   ```
   
   ### API de consulta
-  http://google.com
+  
   
   ### Observações
 
