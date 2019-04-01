@@ -3,13 +3,19 @@ package br.com.quakeparser.model;
 public class Player {
 
     private String player;
+    private int score;
     private int totalKills;
     private int totalDeaths;
+    private int totalDeathsByWorld;
+    private int totalSuicides;
 
     public Player(String player) {
         this.player = player;
+        this.score = 0;
         this.totalKills = 0;
         this.totalDeaths = 0;
+        this.totalDeathsByWorld = 0;
+        this.totalSuicides = 0;
     }
 
     public String getPlayer() {
@@ -20,20 +26,32 @@ public class Player {
         this.player = player;
     }
 
-    public int getTotalKills() {
-        return totalKills;
+    public int getScore() {
+        return score;
     }
 
-    public void setTotalKills(int totalKills) {
-        this.totalKills = totalKills;
+    public int getTotalKills() {
+        return totalKills;
     }
 
     public int getTotalDeaths() {
         return totalDeaths;
     }
 
-    public void setTotalDeaths(int totalDeaths) {
-        this.totalDeaths = totalDeaths;
+    public int getTotalSuicides() {
+        return totalSuicides;
+    }
+
+    public int getTotalDeathsByWorld() {
+        return totalDeathsByWorld;
+    }
+
+    public void addScore() {
+        this.score++;
+    }
+
+    public void subtractScore() {
+        this.score--;
     }
 
     public void addDeath() {
@@ -46,6 +64,14 @@ public class Player {
 
     public void subtractKill() {
         this.totalKills--;
+    }
+
+    public void addSuicide() {
+        this.totalSuicides++;
+    }
+
+    public void addDeathByWorld() {
+        this.totalDeathsByWorld++;
     }
 
     @Override

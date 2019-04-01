@@ -40,34 +40,12 @@ public class ParserService {
 
         Matcher matcherForKill = PATTERN_FOR_KILL.matcher("");
 
-        // Lendo linha por linha
         lines.forEach(line -> {
 
-            // Criando o jogo
-            if (line.contains("InitGame:")) {
-                counterGame++;
-                countKillWorld = 0;
-                game = new Game("game_" + counterGame);
-                games.add(game);
-                players = new HashSet<>();
-                game.setPlayers(players);
-            }
+            game = createGame(games, line);
 
-            // Pegando os jogadores
-            // \d{1,2}:\d{2}\s+ClientUserInfoChanged:\s+\d{1,4}\s+
-            if (line.contains("ClientUserinfoChanged")) {
+            game = addPlayers(line);
 
-                String playerName = getPlayerName(line);
-
-                game.getPlayersString().add(playerName);
-                game.getKills().put(playerName, 0);
-
-                player = new Player(playerName);
-                players.add(player);
-
-            }
-
-            // sabe que aqui teve morte
             matcherForKill.reset(line);
             if (matcherForKill.find()) {
 
@@ -76,27 +54,41 @@ public class ParserService {
                 Matcher matcherInitialKillerPlayer = PATTERN_INITIAL_POSITION_KILLER_PLAYER.matcher(line);
                 Matcher matcherFinalKillerPlayer = PATTERN_FINAL_POSITION_KILLER_PLAYER.matcher(line);
 
-                // Pegando o player que matou
                 if (matcherInitialKillerPlayer.find() && matcherFinalKillerPlayer.find()) {
+
                     String killerPlayerName = getKillerPlayerName(line, matcherInitialKillerPlayer,
                             matcherFinalKillerPlayer);
-                    Player killerPlayer = null;
+                    // Player killerPlayer = null;
 
-                    if (!killerPlayerName.equals("<world>")) {
-                        killerPlayer = players.stream().filter(p -> p.getPlayer().equalsIgnoreCase(killerPlayerName))
-                                .findAny().get();
-                        killerPlayer.addKill();
-                        game.getKills().put(killerPlayer.getPlayer(),
-                                game.getKills().get(killerPlayer.getPlayer()).intValue() + 1);
-                        // killsForPlayers.put( firstPlayer, killsForPlayers.get( firstPlayer
-                        // ).intValue() + 1 );
-                    }
                     Player deadPlayer = getDeadPlayer(line, matcherFinalKillerPlayer);
-                    // System.out.println(killedPlayerName + " matou o " + deadPlayer.getPlayer());
 
                     if (killerPlayerName.equals("<world>")) {
-                        game.addWorldsKill();
-                        deadPlayer.subtractKill();
+
+                        // game.addWorldsKill();
+                        // deadPlayer.subtractKill();
+                        deadPlayer.subtractScore();
+                        game.getKills().put(deadPlayer.getPlayer(),
+                                game.getKills().get(deadPlayer.getPlayer()).intValue() - 1);
+                        deadPlayer.addDeathByWorld();
+
+                    } else {
+
+                        Player killerPlayer = players.stream()
+                                .filter(p -> p.getPlayer().equalsIgnoreCase(killerPlayerName)).findAny().get();
+
+                        killerPlayer.addKill();
+
+                        if (killerPlayer == deadPlayer) {
+                            killerPlayer.addSuicide();
+                            game.getKills().put(killerPlayer.getPlayer(),
+                                    game.getKills().get(killerPlayer.getPlayer()).intValue() - 1);
+                        } else {
+                            // killerPlayer.addKill();
+                            killerPlayer.addScore();
+                            game.getKills().put(killerPlayer.getPlayer(),
+                                    game.getKills().get(killerPlayer.getPlayer()).intValue() + 1);
+                        }
+
                     }
 
                 }
@@ -110,6 +102,37 @@ public class ParserService {
 
         return games;
 
+    }
+
+    // Pegando os jogadores
+    private Game addPlayers(String line) {
+        // \d{1,2}:\d{2}\s+ClientUserInfoChanged:\s+\d{1,4}\s+
+        if (line.contains("ClientUserinfoChanged")) {
+
+            String playerName = getPlayerName(line);
+
+            game.getPlayersString().add(playerName);
+            game.getKills().put(playerName, 0);
+
+            player = new Player(playerName);
+            players.add(player);
+
+        }
+        return game;
+    }
+
+    // Criando o jogo
+    private Game createGame(List<Game> games, String line) {
+        if (line.contains("InitGame:")) {
+            counterGame++;
+            countKillWorld = 0;
+            game = new Game("game_" + counterGame);
+            games.add(game);
+            players = new HashSet<>();
+            game.setPlayers(players);
+            return game;
+        }
+        return game;
     }
 
     // Pegando o player que morreu

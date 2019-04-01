@@ -14,13 +14,8 @@ import br.com.quakeparser.service.ParserService;
 @RestController
 public class ParserController {
 
-    /*
-     * @GetMapping("/quake") public List<Game> getQuake() throws IOException {
-     * return new ParserService().getInfoGames(); }
-     */
-
     @GetMapping("/quake")
-    public ResponseEntity<List<Game>> getQuake() throws IOException {
+    public ResponseEntity<List<Game>> getQuakeGames() throws IOException {
         List<Game> games = new ParserService().getInfoGames();
         if (games != null) {
             return new ResponseEntity<>(games, HttpStatus.OK);
@@ -30,7 +25,7 @@ public class ParserController {
     }
 
     @GetMapping("/quake/{gameName}")
-    public ResponseEntity<Game> getQuake(@PathVariable String gameName) throws IOException {
+    public ResponseEntity<Game> getQuakeGames(@PathVariable String gameName) throws IOException {
         List<Game> games = new ParserService().getInfoGames();
         Game game = games.stream().filter(g -> g.getName().equalsIgnoreCase(gameName)).findAny().orElse(null);
         if (game != null) {

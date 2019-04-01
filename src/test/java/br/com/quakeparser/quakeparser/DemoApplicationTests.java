@@ -74,6 +74,8 @@ public class DemoApplicationTests {
         int sizePlayers = path.getList("players").size();
         assertTrue(sizePlayers == 3);
 
+        assertTrue(path.getInt("totalKills") == 11);
+
         String mocinha = path.getString("players[0].player");
         assertTrue(mocinha.equals("Mocinha"));
 
@@ -82,6 +84,12 @@ public class DemoApplicationTests {
 
         String isgalamido = path.getString("players[2].player");
         assertTrue(isgalamido.equals("Isgalamido"));
+
+        assertTrue(path.getInt("players[2].score") == -7);
+        assertTrue(path.getInt("players[2].totalDeaths") == 10);
+        assertTrue(path.getInt("players[2].totalKills") == 3);
+        assertTrue(path.getInt("players[2].totalDeathsByWorld") == 8);
+        assertTrue(path.getInt("players[2].totalSuicides") == 2);
     }
 
     /**

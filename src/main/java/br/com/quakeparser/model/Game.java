@@ -9,7 +9,6 @@ public class Game {
 
     private String name;
     private int totalKills;
-    private int totalKillsWorld;
     private Set<Player> players = new HashSet<>();
     private Set<String> playersString = new HashSet<>();
     private Map<String, Integer> kills = new HashMap<String, Integer>();
@@ -17,7 +16,6 @@ public class Game {
     public Game(String name) {
         this.name = name;
         this.totalKills = 0;
-        this.totalKillsWorld = 0;
     }
 
     public String getName() {
@@ -32,10 +30,6 @@ public class Game {
         return totalKills;
     }
 
-    public void setTotalKills(int totalKills) {
-        this.totalKills = totalKills;
-    }
-
     public Set<Player> getPlayers() {
         return players;
     }
@@ -48,38 +42,12 @@ public class Game {
         return playersString;
     }
 
-    public void setPlayersString(Set<String> playersString) {
-        this.playersString = playersString;
-    }
-
     public Map<String, Integer> getKills() {
         return kills;
     }
 
-    public void setKills(Map<String, Integer> kills) {
-        this.kills = kills;
-    }
-
     public void addKill() {
         this.totalKills = this.totalKills + 1;
-    }
-
-    /**
-     * @return the totalKillsWorld
-     */
-    public int getTotalKillsWorld() {
-        return totalKillsWorld;
-    }
-
-    /**
-     * @param totalKillsWorld the totalKillsWorld to set
-     */
-    public void setTotalKillsWorld(int totalKillsWorld) {
-        this.totalKillsWorld = totalKillsWorld;
-    }
-
-    public void addWorldsKill() {
-        this.totalKillsWorld++;
     }
 
     @Override
