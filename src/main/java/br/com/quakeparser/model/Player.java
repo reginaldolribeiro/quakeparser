@@ -1,12 +1,18 @@
 package br.com.quakeparser.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Player {
 
     private String player;
     private int score;
+    @JsonIgnore
     private int totalKills;
+    @JsonIgnore
     private int totalDeaths;
+    @JsonIgnore
     private int totalDeathsByWorld;
+    @JsonIgnore
     private int totalSuicides;
 
     public Player(String player) {

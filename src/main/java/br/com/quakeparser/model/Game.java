@@ -15,7 +15,7 @@ public class Game extends ResourceSupport {
 
     private String name;
     private int totalKills;
-    // @JsonIgnore
+    @JsonIgnore
     private Set<Player> players = new HashSet<>();
     private Set<String> playersString = new HashSet<>();
     private Map<String, Integer> kills = new HashMap<String, Integer>();
@@ -53,8 +53,16 @@ public class Game extends ResourceSupport {
         return kills;
     }
 
-    public void addKill() {
+    public void addTotalKill() {
         this.totalKills = this.totalKills + 1;
+    }
+
+    public void addKill(String player) {
+        this.kills.put(player, getKills().get(player).intValue() + 1);
+    }
+
+    public void subtractKill(String player) {
+        this.kills.put(player, getKills().get(player).intValue() - 1);
     }
 
     @Override
