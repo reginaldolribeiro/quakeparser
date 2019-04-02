@@ -15,11 +15,8 @@
   3. Quando o `<world>` mata o player, ele perde -1 kill.
   4. `total_kills` são os kills dos games, isso inclui mortes do `<world>`.  
   
-  ### Consulta dos dados
-  Os dados coletados no log do Quake são expostos através de uma API RESTFul com dados no formato JSON.
-  ### Endpoints RESTFul
-   - http://localhost:8081/quake-api/games/
-   - http://localhost:8081/quake-api/games/game_2
+  ### API de consulta dos dados
+  Os dados coletados no log do Quake são expostos através de uma API RESTFul com dados no formato JSON.  
   
   #### JSON de retorno (Exemplo)
   ```
@@ -47,9 +44,15 @@
     }
   ```
   
+  #### Endpoints RESTFul
+   - http://localhost:8081/quake-api/games/
+   - http://localhost:8081/quake-api/games/game_2
+   
   ### Setup
+  
   
   ### Tecnologias utilizadas
   1. Java
   2. Spring Boot
   3. Testes unitários com JUnit e Rest Assured
+  4. Maven
