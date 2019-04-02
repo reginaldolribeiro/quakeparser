@@ -49,7 +49,11 @@
    - http://localhost:8081/quake-api/games/game_2
    
   ### Setup
-  
+  1. Realizar o download do projeto aqui no Github.
+  2. Extrair o arquivo quakeparser-master.zip
+  3. Entrar na pasta do projeto.
+  4. Executar o comando mvn spring-boot:run
+  5. Após a aplicação subir, acesse a URL http://localhost:8081/quake-api/games/
   
   ### Tecnologias utilizadas
   1. Java
