@@ -1,6 +1,13 @@
 # Quake Log Parser
   
-  Realiza o parser do log do jogo Quake 3 Arena, pegando informações do jogo como: jogadores participantes, total de mortes no jogo e total de morte por jogadores.
+  Realiza o parser do arquivo de log do jogo Quake 3 Arena, pegando informações do jogo como: jogadores participantes, total de mortes no jogo e total de morte por jogadores.
+  
+  ### Exemplo do arquivo de log
+    22:06 Kill: 2 3 7: Isgalamido killed Mocinha by MOD_ROCKET_SPLASH
+  O player Isgalamido matou o player Mocinha.  
+    
+    23:06 Kill: 1022 2 22: <world> killed Isgalamido by MOD_TRIGGER_HURT
+  O player Isgalamido foi morto pois estava ferido.
   
   ### Regras
   1. Quando o player mata ele mesmo, perde -1 kill.  
