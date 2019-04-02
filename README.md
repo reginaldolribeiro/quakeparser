@@ -1,6 +1,11 @@
 # Quake Log Parser
   
-  Realiza o parser do arquivo de log do jogo Quake 3 Arena, pegando informações do jogo como: jogadores participantes, total de mortes no jogo e total de morte por jogadores.
+  Realiza o parser do arquivo de log do jogo Quake 3 Arena, pegando informações como os jogadores participantes, total de mortes por jogo e total de morte por jogadores.
+  A coleta dos dados é feita com o uso de expressões regulares, em busca de padrões de textos no arquivo, sendo eles:
+   - InitGame
+   - ClientConnect/ClientUserinfoChanged
+   - Kill:
+   - ShutdownGame:
   
   ### Exemplo do arquivo de log
     22:06 Kill: 2 3 7: Isgalamido killed Mocinha by MOD_ROCKET_SPLASH
