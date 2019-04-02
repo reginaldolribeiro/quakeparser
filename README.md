@@ -21,6 +21,7 @@
   3. Quando o `<world>` mata o player, ele perde -1 kill.
   4. `total_kills` são os kills dos games, isso inclui mortes do `<world>`.  
   
+  
   ### API de consulta dos dados
   Os dados coletados no log do Quake são expostos através de uma API RESTFul com dados no formato JSON.  
   
