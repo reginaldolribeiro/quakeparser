@@ -15,9 +15,9 @@ public class Game extends ResourceSupport {
 
     private String name;
     private int totalKills;
-    @JsonIgnore
-    private Set<Player> players = new HashSet<>();
-    private Set<String> playersString = new HashSet<>();
+    // @JsonIgnore
+    // private Set<Player> players = new HashSet<>();
+    private Set<String> players = new HashSet<>();
     private Map<String, Integer> kills = new HashMap<String, Integer>();
 
     public Game(String name) {
@@ -37,16 +37,18 @@ public class Game extends ResourceSupport {
         return totalKills;
     }
 
-    public Set<Player> getPlayers() {
+    /*
+     * public Set<Player> getPlayers() { return players; }
+     * 
+     * public void setPlayers(Set<Player> players) { this.players = players; }
+     */
+
+    public Set<String> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Set<Player> players) {
-        this.players = players;
-    }
-
-    public Set<String> getPlayersString() {
-        return playersString;
+    public void addPlayer(String player) {
+        this.getPlayers().add(player);
     }
 
     public Map<String, Integer> getKills() {
@@ -67,9 +69,14 @@ public class Game extends ResourceSupport {
 
     @Override
     public String toString() {
-        return "Game [name=" + name + ", totalKills=" + totalKills + ", players=" + players + ", playersString="
-                + playersString + ", kills=" + kills + "]";
+        return "Game [name=" + name + ", totalKills=" + totalKills + ", players=" + players + ", kills=" + kills + "]";
     }
+
+    /*
+     * @Override public String toString() { return "Game [name=" + name +
+     * ", totalKills=" + totalKills + ", players=" + players + ", playersString=" +
+     * playersString + ", kills=" + kills + "]"; }
+     */
 
     @Override
     public int hashCode() {
@@ -77,8 +84,8 @@ public class Game extends ResourceSupport {
         int result = 1;
         result = prime * result + ((kills == null) ? 0 : kills.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        // result = prime * result + ((players == null) ? 0 : players.hashCode());
         result = prime * result + ((players == null) ? 0 : players.hashCode());
-        result = prime * result + ((playersString == null) ? 0 : playersString.hashCode());
         result = prime * result + totalKills;
         return result;
     }
@@ -102,15 +109,14 @@ public class Game extends ResourceSupport {
                 return false;
         } else if (!name.equals(other.name))
             return false;
+        /*
+         * if (players == null) { if (other.players != null) return false; } else if
+         * (!players.equals(other.players)) return false;
+         */
         if (players == null) {
             if (other.players != null)
                 return false;
         } else if (!players.equals(other.players))
-            return false;
-        if (playersString == null) {
-            if (other.playersString != null)
-                return false;
-        } else if (!playersString.equals(other.playersString))
             return false;
         if (totalKills != other.totalKills)
             return false;

@@ -3,6 +3,8 @@ package br.com.quakeparser.quakeparser;
 import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,20 +75,14 @@ public class DemoApplicationTests {
 
         assertTrue(path.getInt("totalKills") == 11);
 
-        String mocinha = path.getString("players[0].player");
-        assertTrue(mocinha.equals("Mocinha"));
+        assertTrue(path.getString("players").contains("Mocinha"));
+        assertTrue(path.getString("players").contains("Dono da Bola"));
+        assertTrue(path.getString("players").contains("Isgalamido"));
 
-        String donoDaBola = path.getString("players[1].player");
-        assertTrue(donoDaBola.equals("Dono da Bola"));
-
-        String isgalamido = path.getString("players[2].player");
-        assertTrue(isgalamido.equals("Isgalamido"));
-
-        assertTrue(path.getInt("players[2].score") == -7);
-        assertTrue(path.getInt("players[2].totalDeaths") == 10);
-        assertTrue(path.getInt("players[2].totalKills") == 3);
-        assertTrue(path.getInt("players[2].totalDeathsByWorld") == 8);
-        assertTrue(path.getInt("players[2].totalSuicides") == 2);
+        Map<Object, Object> kills = path.getMap("kills");
+        assertEquals(kills.get("Mocinha"), 0);
+        assertEquals(kills.get("Dono da Bola"), 0);
+        assertEquals(kills.get("Isgalamido"), -9);
     }
 
     /**

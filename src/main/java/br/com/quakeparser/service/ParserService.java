@@ -5,20 +5,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import br.com.quakeparser.model.Game;
-import br.com.quakeparser.model.Player;
 
 public class ParserService {
 
     private Game game;
     private int counterGame = 0;
-    // private Set<Player> players;
-    // private Player player;
 
     private static final Pattern PATTERN_FOR_KILL = Pattern.compile("\\s*\\d{1,2}:\\d{2}\\s*(Kill:)\\w*");
     private static final Pattern PATTERN_INITIAL_POSITION_KILLER_PLAYER = Pattern
@@ -26,9 +21,6 @@ public class ParserService {
     private static final Pattern PATTERN_FINAL_POSITION_KILLER_PLAYER = Pattern.compile("\\s+\\bkilled");
     private static final Pattern PATTERN_FINAL_POSITION_DEAD_PLAYER = Pattern.compile("\\bby\\b");
 
-    /**
-     * 
-     */
     public List<Game> getInfoGames() throws IOException {
 
         List<Game> games = new ArrayList<>();
@@ -54,8 +46,7 @@ public class ParserService {
 
                 if (matcherInitialKillerPlayer.find() && matcherFinalKillerPlayer.find()) {
 
-                    String killerPlayer = getKillerPlayerName(line, matcherInitialKillerPlayer,
-                            matcherFinalKillerPlayer);
+                    String killerPlayer = getKillerPlayer(line, matcherInitialKillerPlayer, matcherFinalKillerPlayer);
 
                     String deadPlayer = getDeadPlayer(line, matcherFinalKillerPlayer);
 
@@ -70,16 +61,6 @@ public class ParserService {
                         }
 
                     }
-
-                    System.out.println("KIller " + killerPlayer + " - Dead " + deadPlayer);
-                    System.out.println("Sao iguais " + killerPlayer.equals(deadPlayer));
-
-                    /*
-                     * if (killerPlayer.equals(deadPlayer)) { game.getKills().put(killerPlayer,
-                     * game.getKills().get(killerPlayer).intValue() - 1); } else {
-                     * game.getKills().put(killerPlayer,
-                     * game.getKills().get(killerPlayer).intValue() + 1); }
-                     */
 
                 }
 
@@ -100,13 +81,10 @@ public class ParserService {
         if (line.contains("ClientUserinfoChanged")) {
 
             String playerName = getPlayerName(line);
-            game.getPlayersString().add(playerName);
+            game.getPlayers().add(playerName);
             if (!game.getKills().containsKey(playerName)) {
                 game.getKills().put(playerName, 0);
             }
-
-            // player = new Player(playerName);
-            // players.add(player);
 
         }
         return game;
@@ -118,8 +96,6 @@ public class ParserService {
             counterGame++;
             game = new Game("game_" + counterGame);
             games.add(game);
-            // players = new HashSet<>();
-            // game.setPlayers(players);
             return game;
         }
         return game;
@@ -139,40 +115,8 @@ public class ParserService {
         }
         return null;
     }
-    /*
-     * private Player getDeadPlayer(String line, Matcher matcherFinalKillerPlayer) {
-     * 
-     * Matcher matcherFinalPositionDeadPlayer =
-     * PATTERN_FINAL_POSITION_DEAD_PLAYER.matcher(line); int
-     * initialPositionDeadPlayer = matcherFinalKillerPlayer.end();
-     * 
-     * if (matcherFinalPositionDeadPlayer.find()) { String deadPlayerName =
-     * line.substring(initialPositionDeadPlayer,
-     * matcherFinalPositionDeadPlayer.start()) .trim(); Player deadPlayer =
-     * players.stream().filter(p ->
-     * p.getPlayer().equalsIgnoreCase(deadPlayerName)).findAny() .get();
-     * deadPlayer.addDeath();
-     * 
-     * // String causeOfDeath = getCauseOfDeath(line,
-     * matcherFinalPositionDeadPlayer);
-     * 
-     * return deadPlayer;
-     * 
-     * } return null; }
-     */
 
-    // Pegando a causa da morte
-    /*
-     * private String getCauseOfDeath(String line, Matcher
-     * matcherFinalPositionDeadPlayer) { int initialPositionCauseOfDeath =
-     * matcherFinalPositionDeadPlayer.end(); return
-     * line.substring(initialPositionCauseOfDeath).trim(); //
-     * System.out.println(playerKilled.getPlayer() + " matou " + deadPlayer + " com
-     * // " + causaDaMorte); }
-     */
-
-    private String getKillerPlayerName(String line, Matcher matcherInitialKillerPlayer,
-            Matcher matcherFinalPlayerKilled) {
+    private String getKillerPlayer(String line, Matcher matcherInitialKillerPlayer, Matcher matcherFinalPlayerKilled) {
         int initialOfPlayer = matcherInitialKillerPlayer.end();
         int finalOfPlayer = matcherFinalPlayerKilled.start();
         return line.substring(initialOfPlayer, finalOfPlayer).trim();
