@@ -28,7 +28,9 @@ public class ParserService {
         List<Game> games = new ArrayList<>();
 
         List<String> lines = loadFile(GAMES_LOG);
-        System.out.println("*** Quantidade de linhas do games.log: " + lines.size() + " ***");
+
+        // System.out.println("*** Quantidade de linhas do games.log: " + lines.size() +
+        // " ***");
 
         lines.forEach(line -> {
 
@@ -41,7 +43,7 @@ public class ParserService {
         });
 
         // games.forEach(System.out::println);
-        System.out.println("Quantidade de games: " + games.size());
+        // System.out.println("Quantidade de games: " + games.size());
 
         return games;
 
