@@ -53,7 +53,7 @@
   
   #### Endpoints RESTFul
    - http://localhost:8081/quake-api/games/
-   - http://localhost:8081/quake-api/games/game_2
+   - http://localhost:8081/quake-api/games/game_4
    
   ### Setup
   1. Realizar o download do projeto aqui no Github.
